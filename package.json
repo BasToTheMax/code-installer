@@ -1,0 +1,17 @@
+{
+  "name": "ptero-installer",
+  "version": "1.0.0",
+  "description": "[ERTIXNODES] Install ptero + wings",
+  "main": "index.js",
+  "scripts": {
+    "build": "pkg -o installer --public -t node18-linux index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "pkg": "^5.8.1",
+    "shelljs": "^0.8.5"
+  }
+}
