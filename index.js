@@ -1,5 +1,6 @@
 const c = require('ansi-colors');
 const sh = require('shelljs');
+const fs = require('fs');
 const { log } = console;
 
 if (!sh.which('apt')) {
@@ -14,17 +15,31 @@ if (!sh.which('apt')) {
 
 sh.exec('apt update -y');
 sh.exec('apt install curl wget sudo htop -y');
-sh.exec('apt install software-properties-common curl apt-transport-https ca-certificates gnupg -y');
-sh.exec('LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php');
+sh.exec('curl -fsSL https://code-server.dev/install.sh | sh');
 
-sh.exec('curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg');
-sh.exec('echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list');
+sh.exec('systemctl enable --now code-server@root');
 
-sh.exec('curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash');
-sh.exec('apt update -y')
+var path = '/root/.config/code-server/config.yaml';
+var r = '';
 
-sh.exec('apt -y install php8.1 php8.1-{common,cli,gd,mysql,mbstring,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server');
+sh.exec('mkdir ' + path);
 
-sh.exec('curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer');
+var os = require("os");
+var hostname = os.hostname();
+var vpsID = parseInt(String(hostname).replace('vps', ''));
 
-sh.exec('mkdir -p /var/www/pterodactyl');
+r += `bind-addr: 0.0.0.0:3${vpsID}1`;
+r += 'auth: password';
+r += 'cert: false';
+r += 'password: ' + `code${vpsID}`
+
+fs.writeFileSync(path, r);
+
+log(
+    c.green('[OK]'),
+    `Installed at http://185.234.69.13:3${vpsID}1/ with password code${vpsID}`
+);
+log(
+    c.blue('[TIP]'),
+    `Don't forget to change the password at ${path}!`
+);
