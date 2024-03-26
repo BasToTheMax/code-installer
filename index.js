@@ -19,10 +19,11 @@ sh.exec('curl -fsSL https://code-server.dev/install.sh | sh');
 
 sh.exec('systemctl enable --now code-server@root');
 
-var path = '/root/.config/code-server/config.yaml';
+var dir = '/root/.config/code-server/';
+var path =  dir + 'config.yaml';
 var r = '';
 
-sh.exec('mkdir ' + path);
+sh.exec('mkdir ' + dir);
 
 var os = require("os");
 var hostname = os.hostname();
